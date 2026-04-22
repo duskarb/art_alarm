@@ -1,0 +1,70 @@
+profile:
+  name: "Namkyu Yeo (여남규)"
+  birth_year: 2003
+  affiliation: "KAIST 산업디자인학과 / Visual Instruments Lab"
+  regions: ["서울", "대전", "전국"]
+  email: "prism011312@gmail.com"
+
+work_summary: |
+  Glimpse — critical system/media art. Two local LLMs converse, pen plotter (Roland DXY-880)
+  inscribes each utterance at random coordinates on paper. Themes: AI dialogue, interpassivity,
+  performance, conceptual art, human-AI interaction, language as material, visible irony of prompting.
+
+# 1차 필터 — 공고 텍스트에 하나라도 매칭되면 후보로 올림
+include_keywords:
+  # 장르
+  - "미디어아트"
+  - "미디어 아트"
+  - "뉴미디어"
+  - "디지털아트"
+  - "AI"
+  - "인공지능"
+  - "인터랙티브"
+  - "융복합"
+  - "실험예술"
+  - "개념미술"
+  - "시각예술"
+  - "디자인"
+  # 대상
+  - "청년작가"
+  - "청년예술인"
+  - "청년 예술"
+  - "신진작가"
+  - "신진 예술"
+  - "차세대"
+  - "학생"
+  - "학부"
+  # 형태
+  - "공모"
+  - "지원사업"
+  - "레지던시"
+  - "전시"
+  - "오픈콜"
+  - "포스터"
+  - "기획"
+  - "창작"
+
+# 하나라도 걸리면 탈락
+exclude_keywords:
+  - "무용"
+  - "국악"
+  - "연극"
+  - "뮤지컬"
+  - "성악"
+  - "클래식음악"
+  - "발레"
+  - "마감"  # "지난 공고" 페이지 잘못 긁혔을 때 방어
+  - "결과발표"
+
+# 연령 필터 — 공고 본문에서 연령 제한 패턴을 잡아냄
+# 사용자는 2003년생 → 현재 만 22세 (2026 기준)
+user_age_in_year: 22
+user_birth_year: 2003
+
+# 지역 필터 — 이 중 하나라도 걸리면 통과
+regions_of_interest:
+  - "전국"
+  - "서울"
+  - "대전"
+  - "중앙"
+  - "온라인"
