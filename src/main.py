@@ -17,6 +17,7 @@ from .sources.ifac import IfacSource
 from .sources.kawf import KawfSource
 from .sources.mmca import MmcaSource
 from .sources.mmca_residency import MmcaResidencySource
+from .sources.pcf import PcfSource
 from .sources.sfac import SfacSource
 from .state import SeenStore
 
@@ -36,6 +37,7 @@ def gather_sources() -> list:
         MmcaResidencySource(),
         ArkoArtCenterSource(),
         IfacSource(),
+        PcfSource(),
     ]
 
 
@@ -57,7 +59,7 @@ def run(dry_run: bool = False) -> int:
         try:
             items = src.fetch_list(max_items=40)
         except Exception as e:
-            print(f"  [error] fetch_list failed: {e}", file=sys.stderr)
+            print(f"  [error] {src.name} fetch_list failed: {e}")
             continue
         new_items = [it for it in items if not seen.is_seen(it.id)]
         print(f"  {len(items)} total, {len(new_items)} new")
@@ -66,7 +68,7 @@ def run(dry_run: bool = False) -> int:
             try:
                 src.fetch_detail(it)
             except Exception as e:
-                print(f"  [warn] detail fetch failed for {it.id}: {e}", file=sys.stderr)
+                print(f"  [warn] {src.name} detail fetch failed for {it.id}: {e}")
         all_new.extend(new_items)
 
     print(f"\n[rule] {len(all_new)} -> filtering by keywords/region...")

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import urllib3
 
 from ..models import Opportunity
@@ -25,6 +27,18 @@ class BaseSource(ABC):
             "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
         })
         self.session.verify = self.verify_ssl
+
+        # Connection reset / 일시적 5xx 에 대해 3번까지 지수 백오프 재시도
+        retry = Retry(
+            total=3,
+            backoff_factor=1.5,
+            status_forcelist=(500, 502, 503, 504),
+            allowed_methods=frozenset(["GET", "POST"]),
+            raise_on_status=False,
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        self.session.mount("http://", adapter)
+        self.session.mount("https://", adapter)
 
     def get(self, url: str) -> str:
         resp = self.session.get(url, timeout=self.timeout, verify=self.verify_ssl)
