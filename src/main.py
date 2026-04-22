@@ -19,6 +19,7 @@ from .sources.ifac import IfacSource
 from .sources.kawf import KawfSource
 from .sources.mmca import MmcaSource
 from .sources.mmca_residency import MmcaResidencySource
+from .sources.ncas import NcasSource
 from .sources.pcf import PcfSource
 from .sources.sfac import SfacSource
 from .state import SeenStore
@@ -40,6 +41,7 @@ def gather_sources() -> list:
         ArkoArtCenterSource(),
         IfacSource(),
         PcfSource(),
+        NcasSource(),
     ]
 
 

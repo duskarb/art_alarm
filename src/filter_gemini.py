@@ -116,8 +116,11 @@ class GeminiFilter:
             v = self.judge(opp)
             opp.relevance_score = v["score"]
             opp.relevance_reason = v["reason"]
-            opp.deadline = v["deadline"]
-            opp.opportunity_type = v["opportunity_type"]
+            # 소스에서 미리 채워진 값(예: NCAS) 은 보존하고 빈 값만 채움
+            if not opp.deadline:
+                opp.deadline = v["deadline"]
+            if not opp.opportunity_type:
+                opp.opportunity_type = v["opportunity_type"]
             if v["relevant"] and v["score"] >= self.threshold:
                 kept.append(opp)
             time.sleep(sleep_between)
