@@ -30,6 +30,7 @@ python3 -m venv .venv
 ```
 
 실제 전송:
+
 ```bash
 export GEMINI_API_KEY=...
 export SMTP_USER=prism011312@gmail.com
@@ -41,6 +42,7 @@ export NOTIFY_TO=prism011312@gmail.com
 ## GitHub 세팅
 
 ### 1. 리포지토리 푸시
+
 ```bash
 cd art_alarm
 git init
@@ -52,19 +54,22 @@ git push -u origin main
 ```
 
 ### 2. Secrets 등록 (Settings → Secrets and variables → Actions)
-| 이름 | 값 |
-|---|---|
+
+| 이름             | 값                                                  |
+| ---------------- | --------------------------------------------------- |
 | `GEMINI_API_KEY` | https://aistudio.google.com/apikey 에서 발급 (무료) |
-| `SMTP_USER` | Gmail 주소 (예: `prism011312@gmail.com`) |
-| `SMTP_PASS` | Gmail **앱 비밀번호** 16자리 (아래 참고) |
-| `NOTIFY_TO` | 수신 이메일 (보통 본인 Gmail) |
+| `SMTP_USER`      | Gmail 주소 (예: `prism011312@gmail.com`)            |
+| `SMTP_PASS`      | Gmail **앱 비밀번호** 16자리 (아래 참고)            |
+| `NOTIFY_TO`      | 수신 이메일 (보통 본인 Gmail)                       |
 
 ### 3. Gmail 앱 비밀번호 생성
+
 1. Google 계정 → 보안 → **2단계 인증** 켜기
 2. https://myaccount.google.com/apppasswords 접속
 3. 앱 이름 `art_alarm` 입력 → 16자리 비밀번호 생성 → `SMTP_PASS` 에 그대로 넣기 (공백 제거)
 
 ### 4. 워크플로우 실행
+
 - 자동: 매일 KST 08:00 실행
 - 수동: Actions 탭 → `art_alarm daily` → Run workflow
 
