@@ -237,3 +237,5 @@ def render_dashboard(
         json.dumps(data, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+    # GitHub Pages 의 Jekyll 처리 비활성화 (이 HTML 은 완성된 static 페이지)
+    (out_dir / ".nojekyll").write_text("", encoding="utf-8")
