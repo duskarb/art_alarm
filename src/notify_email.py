@@ -60,6 +60,10 @@ def send(
     msg.attach(MIMEText(text_fallback or "HTML 메일 클라이언트에서 확인해주세요.", "plain", "utf-8"))
     msg.attach(MIMEText(html_body, "html", "utf-8"))
 
+    # Gmail 앱 비번 복사시 섞이는 non-breaking space/공백 제거
+    clean_user = username.strip().replace("\xa0", "")
+    clean_pass = "".join(password.split()).replace("\xa0", "")
+
     with smtplib.SMTP_SSL(smtp_host, smtp_port) as server:
-        server.login(username, password)
-        server.sendmail(from_addr, [to_addr], msg.as_string())
+        server.login(clean_user, clean_pass)
+        server.sendmail(clean_user, [to_addr], msg.as_string())

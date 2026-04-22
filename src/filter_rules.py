@@ -1,12 +1,18 @@
+import re
 from typing import List, Tuple
 
 from .models import Opportunity
+
+
+def _strip_ws(s: str) -> str:
+    return re.sub(r"\s+", "", s)
 
 
 class RuleFilter:
     """First-pass filter: include/exclude keywords + region.
 
     Only prunes obvious non-matches. Age and detailed fit are judged by Gemini later.
+    Exclude matching is whitespace-insensitive so '결과 발표' ↔ '결과발표' 도 잡힘.
     """
 
     def __init__(
@@ -17,13 +23,15 @@ class RuleFilter:
     ):
         self.include = [k.lower() for k in include_keywords]
         self.exclude = [k.lower() for k in exclude_keywords]
+        self.exclude_nospace = [_strip_ws(k) for k in self.exclude]
         self.regions = [r.lower() for r in regions_of_interest]
 
     def passes(self, opp: Opportunity) -> Tuple[bool, List[str]]:
         text = f"{opp.title}\n{opp.body}".lower()
+        text_nospace = _strip_ws(text)
 
-        for kw in self.exclude:
-            if kw in text:
+        for kw in self.exclude_nospace:
+            if kw in text_nospace:
                 return False, []
 
         matched = [kw for kw in self.include if kw in text]

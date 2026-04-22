@@ -83,19 +83,36 @@ class SfacSource(BaseSource):
         return items
 
     def fetch_detail(self, opp: Opportunity) -> None:
+        # opp.url 에서 bcIdx 추출해 AJAX endpoint 호출
+        m = re.search(r"bcIdx=(\d+)", opp.url)
+        if not m:
+            return
+        bc_idx = m.group(1)
         try:
-            html = self.get(opp.url)
+            resp = self.session.post(
+                "https://www.sfac.or.kr/site/SFAC_KOR/ex/bbs/ViewSfac.do",
+                data={
+                    "cbIdx": self.cb_idx,
+                    "bcIdx": bc_idx,
+                    "viewUrl": "/opensquare/notice/support_list.do",
+                    "listUrl": "/opensquare/notice/support_list.do",
+                    "registUrl": "",
+                    "type": "",
+                },
+                headers={"Referer": opp.url},
+                timeout=self.timeout,
+                verify=self.verify_ssl,
+            )
+            resp.raise_for_status()
+            resp.encoding = resp.apparent_encoding or "utf-8"
+            html = resp.text
         except Exception as e:
             opp.body = f"[fetch_detail error: {e}]"
             return
         soup = BeautifulSoup(html, "lxml")
-        view = (
-            soup.select_one(".board-view--content")
-            or soup.select_one(".view-content")
-            or soup.select_one(".sub--contents")
-        )
-        if view:
-            text = view.get_text("\n", strip=True)
+        body = soup.select_one(".board-view--body")
+        if body:
+            text = body.get_text("\n", strip=True)
             opp.body = text
             opp.summary = text[:400]
 

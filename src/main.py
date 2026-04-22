@@ -10,6 +10,7 @@ from .filter_gemini import GeminiFilter
 from .filter_rules import RuleFilter
 from .models import Opportunity
 from .notify_email import render_html, send
+from .sources.acc import AccSource
 from .sources.dcaf import DcafSource
 from .sources.kawf import KawfSource
 from .sources.sfac import SfacSource
@@ -22,7 +23,7 @@ def load_config(path: Path) -> dict:
 
 
 def gather_sources() -> list:
-    return [KawfSource(), DcafSource(), SfacSource()]
+    return [KawfSource(), DcafSource(), SfacSource(), AccSource()]
 
 
 def run(dry_run: bool = False) -> int:
