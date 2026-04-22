@@ -73,6 +73,22 @@ git push -u origin main
 - 자동: 매일 KST 08:00 실행
 - 수동: Actions 탭 → `art_alarm daily` → Run workflow
 
+## 대시보드
+
+매 실행마다 `docs/index.html` + `docs/data.json` 이 자동 생성/커밋됨.
+현재 지원 가능한 공고를 마감 임박 순으로 볼 수 있는 static 페이지.
+
+### GitHub Pages 설정 (최초 1회)
+1. 리포 Settings → **Pages**
+2. Source: **Deploy from a branch**
+3. Branch: `main` / Folder: `/docs` → Save
+4. 1~2분 후 `https://<USER>.github.io/<REPO>/` 에서 접속 가능
+
+### 아카이브 규칙
+- Gemini 가 PASS 한 항목만 대시보드에 올라감
+- 마감일이 있고 지난 항목 → 자동 제거
+- 마감일 모름 → `first_seen` 기준 60일 뒤 자동 제거
+
 ## 동작 원리
 
 1. **fetch**: `src/sources/*.py` 각 스크래퍼가 공고 리스트+본문 수집

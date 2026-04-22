@@ -36,14 +36,15 @@ jobs:
           NOTIFY_TO: ${{ secrets.NOTIFY_TO }}
         run: python -m src.main
 
-      - name: Commit updated seen.json
+      - name: Commit updated state + dashboard
         run: |
-          if [[ -n "$(git status --porcelain seen.json)" ]]; then
+          CHANGED=$(git status --porcelain seen.json active.json docs/)
+          if [[ -n "$CHANGED" ]]; then
             git config user.name  "art-alarm-bot"
             git config user.email "art-alarm-bot@users.noreply.github.com"
-            git add seen.json
-            git commit -m "chore: update seen state ($(date -u +%Y-%m-%d))"
+            git add seen.json active.json docs/
+            git commit -m "chore: update state + dashboard ($(date -u +%Y-%m-%d))"
             git push
           else
-            echo "No seen.json changes."
+            echo "No state/dashboard changes."
           fi

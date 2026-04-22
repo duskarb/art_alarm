@@ -6,6 +6,8 @@ from pathlib import Path
 
 import yaml
 
+from .active_store import ActiveStore
+from .dashboard import render_dashboard
 from .filter_gemini import GeminiFilter
 from .filter_rules import RuleFilter
 from .models import Opportunity
@@ -46,6 +48,7 @@ def run(dry_run: bool = False) -> int:
     cfg = load_config(root / "config.yaml")
 
     seen = SeenStore(root / "seen.json")
+    active = ActiveStore(root / "active.json")
 
     rule = RuleFilter(
         include_keywords=cfg.get("include_keywords", []),
@@ -142,6 +145,16 @@ def run(dry_run: bool = False) -> int:
     }
     seen.mark(conclusively_judged)
     seen.save()
+
+    # 대시보드 아카이브 업데이트: 오늘 PASS 된 항목 추가 + 마감 지난 항목 제거
+    active.add_or_update(final)
+    removed = active.prune_expired()
+    active.save()
+    print(f"[active] {len(active.all_active())} active opportunities ({removed} expired removed)")
+
+    # GitHub Pages 용 static 대시보드 생성
+    render_dashboard(active.all_active(), root / "docs")
+    print(f"[dashboard] docs/index.html generated")
 
     return 0
 
