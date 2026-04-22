@@ -11,8 +11,12 @@ from .filter_rules import RuleFilter
 from .models import Opportunity
 from .notify_email import render_html, send
 from .sources.acc import AccSource
+from .sources.arko_art import ArkoArtCenterSource
 from .sources.dcaf import DcafSource
+from .sources.ifac import IfacSource
 from .sources.kawf import KawfSource
+from .sources.mmca import MmcaSource
+from .sources.mmca_residency import MmcaResidencySource
 from .sources.sfac import SfacSource
 from .state import SeenStore
 
@@ -23,7 +27,16 @@ def load_config(path: Path) -> dict:
 
 
 def gather_sources() -> list:
-    return [KawfSource(), DcafSource(), SfacSource(), AccSource()]
+    return [
+        KawfSource(),
+        DcafSource(),
+        SfacSource(),
+        AccSource(),
+        MmcaSource(),
+        MmcaResidencySource(),
+        ArkoArtCenterSource(),
+        IfacSource(),
+    ]
 
 
 def run(dry_run: bool = False) -> int:
