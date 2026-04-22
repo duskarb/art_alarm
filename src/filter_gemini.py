@@ -48,7 +48,7 @@ class GeminiFilter:
         work_summary: str,
         user_age: int,
         user_birth_year: int,
-        model_name: str = "gemini-2.0-flash",
+        model_name: str = "gemini-2.5-flash-lite",
         threshold: float = 0.55,
     ):
         self.client = genai.Client(api_key=api_key)

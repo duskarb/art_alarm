@@ -10,7 +10,9 @@ from .filter_gemini import GeminiFilter
 from .filter_rules import RuleFilter
 from .models import Opportunity
 from .notify_email import render_html, send
+from .sources.dcaf import DcafSource
 from .sources.kawf import KawfSource
+from .sources.sfac import SfacSource
 from .state import SeenStore
 
 
@@ -20,7 +22,7 @@ def load_config(path: Path) -> dict:
 
 
 def gather_sources() -> list:
-    return [KawfSource()]
+    return [KawfSource(), DcafSource(), SfacSource()]
 
 
 def run(dry_run: bool = False) -> int:
@@ -70,6 +72,10 @@ def run(dry_run: bool = False) -> int:
         )
         final = gf.filter(rule_passed)
         print(f"  {len(final)} passed Gemini filter")
+        for o in rule_passed:
+            verdict = "PASS" if o in final else "drop"
+            print(f"  [{verdict}] {o.relevance_score:.2f} · {o.title[:55]}")
+            print(f"         → {o.relevance_reason}")
     else:
         if not gemini_key:
             print("[gemini] GEMINI_API_KEY not set, skipping LLM filter")
@@ -113,7 +119,12 @@ def run(dry_run: bool = False) -> int:
     else:
         print("[result] nothing to notify today")
 
-    seen.mark(o.id for o in all_new)
+    # Gemini 에러 난 항목은 seen 에 넣지 않아 다음 실행 때 재시도
+    conclusively_judged = {
+        o.id for o in all_new
+        if not (o.relevance_reason or "").startswith("[gemini error]")
+    }
+    seen.mark(conclusively_judged)
     seen.save()
 
     return 0
